@@ -19,7 +19,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ListView
-import java.util.*
 
 class EarthquakeActivity : AppCompatActivity() {
 
@@ -27,15 +26,7 @@ class EarthquakeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.earthquake_activity)
 
-        // Create a fake list of earthquake locations.
-        val earthquakes = ArrayList<EarthQuake>()
-        earthquakes.add(EarthQuake(7.2, "San Francisco", "Feb 2, 2016"))
-        earthquakes.add(EarthQuake(6.1,"London", "July 20, 2015"))
-        earthquakes.add(EarthQuake(3.9, "Tokyo", "Nov 10, 2014"))
-        earthquakes.add(EarthQuake(5.4, "Mexico City", "May 3, 2014"))
-        earthquakes.add(EarthQuake(2.8, "Moscow", "Jan 31, 2013"))
-        earthquakes.add(EarthQuake(4.9, "Rio de Janeiro", "Aug 19, 2012"))
-        earthquakes.add(EarthQuake(1.6, "Paris", "Oct 30, 2011"))
+        val earthquakes = QueryUtils.extractEarthquakes()
 
         // Find a reference to the {@link ListView} in the layout
         val earthquakeListView = findViewById<View>(R.id.list) as ListView

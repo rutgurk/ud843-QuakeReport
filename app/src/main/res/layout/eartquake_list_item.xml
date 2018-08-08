@@ -9,23 +9,26 @@
 
     <TextView
         android:id="@+id/earthquake_magnitude"
-        android:layout_width="48dp"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         tools:text="9.2"
         android:layout_margin="8dp"/>
 
     <TextView
         android:id="@+id/earthquake_place"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="2"
         tools:text="San Francisco"
         android:layout_margin="8dp"/>
 
     <TextView
         android:id="@+id/earthquake_date"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="2"
         android:gravity="right"
         android:padding="8dp"
-        tools:text="Sep 15, 1984" />
+        tools:text="Sep 15, 1984 \n14:00 PM"/>
 </LinearLayout>

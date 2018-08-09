@@ -15,10 +15,13 @@
  */
 package com.example.android.quakereport
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ListView
+import android.widget.Toast
 
 class EarthquakeActivity : AppCompatActivity() {
 
@@ -37,6 +40,18 @@ class EarthquakeActivity : AppCompatActivity() {
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.adapter = adapter
+        // Set a click listener on that View
+        earthquakeListView.setOnItemClickListener{ _, _, position, _ ->
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(earthquakes[position].url))
+                    this.startActivity(intent)
+                } catch (e: Throwable) {
+                    Toast.makeText(this, "Het openen van de link is niet gelukt", Toast.LENGTH_LONG)
+                            .apply {
+                                show()
+                            }
+                }
+            }
     }
 
     companion object {

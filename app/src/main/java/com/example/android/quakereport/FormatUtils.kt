@@ -10,7 +10,7 @@ object FormatUtils {
     private val LOCATION_SEPARATOR = " of "
     private val MAGNITUDE_FORMAT = "0.0"
     private val TIME_FORMAT = "h:mm a"
-    private val DATE_FORMAT = "MMM DD, yyyy"
+    private val DATE_FORMAT = "MMM dd, yyyy"
 
     fun formatDate(timeInMiliseconds: Long): String {
         return SimpleDateFormat(DATE_FORMAT).format(Date(timeInMiliseconds))

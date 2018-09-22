@@ -17,6 +17,7 @@ package com.example.android.quakereport
 
 import android.content.Intent
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -25,33 +26,51 @@ import android.widget.Toast
 
 class EarthquakeActivity : AppCompatActivity() {
 
+    lateinit var adapter: QuakeAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.earthquake_activity)
-
-        val earthquakes = QueryUtils.extractEarthquakes()
-
         // Find a reference to the {@link ListView} in the layout
         val earthquakeListView = findViewById<View>(R.id.list) as ListView
 
         // Create a new {@link ArrayAdapter} of earthquakes
-        val adapter = QuakeAdapter(
-                this, earthquakes)
+        adapter = QuakeAdapter(
+                this, ArrayList<EarthQuake>())
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.adapter = adapter
         // Set a click listener on that View
         earthquakeListView.setOnItemClickListener{ _, _, position, _ ->
-                try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(earthquakes[position].url))
-                    this.startActivity(intent)
-                } catch (e: Throwable) {
-                    Toast.makeText(this, "Het openen van de link is niet gelukt", Toast.LENGTH_LONG)
-                            .apply {
-                                show()
-                            }
-                }
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(adapter.getItem(position).url))
+                this.startActivity(intent)
+            } catch (e: Throwable) {
+                Toast.makeText(this, "Het openen van de link is niet gelukt", Toast.LENGTH_LONG)
+                        .apply {
+                            show() }
             }
+        }
+        ExtractEarthQuakes().execute("https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10")
+    }
+
+    private inner class ExtractEarthQuakes: AsyncTask<String, Void, List<EarthQuake>>() {
+        override fun doInBackground(vararg urls: String): List<EarthQuake>? {
+            // Don't perform the request if there are no URLs, or the first URL is null.
+            if (urls.size < 1 || urls[0] == null) {
+                return null
+            }
+            return QueryUtils.fetchEarthquakeData(urls[0])
+        }
+
+        override fun onPostExecute(results: List<EarthQuake>?) {
+            adapter.clear()
+            // If there is no result, do nothing.
+            if (results != null && !results.isEmpty()) {
+                adapter.addAll(results)
+            }
+        }
+
     }
 
     companion object {

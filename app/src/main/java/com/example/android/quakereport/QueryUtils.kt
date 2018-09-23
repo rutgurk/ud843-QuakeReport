@@ -20,7 +20,7 @@ import java.nio.charset.Charset
  * Helper methods related to requesting and receiving earthquake data from USGS.
  */
 object QueryUtils {
-    
+
     /**
      * Query the USGS dataset and return a list of earthQuakes.
      */

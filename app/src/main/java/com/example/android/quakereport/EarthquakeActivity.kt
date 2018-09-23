@@ -15,16 +15,41 @@
  */
 package com.example.android.quakereport
 
+import android.app.LoaderManager
 import android.content.Intent
+import android.content.Loader
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.ListView
 import android.widget.Toast
 
-class EarthquakeActivity : AppCompatActivity() {
+class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<EarthQuake>>, AppCompatActivity() {
+
+    private val USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10"
+    private val EARTHQUAKE_LOADER_ID = 1
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<EarthQuake>> {
+        Log.i(LOG_TAG, "Loader info: onCreateLoader has been called")
+        return EarthQuakeLoader(this, USGS_URL)
+    }
+
+    override fun onLoadFinished(loader: Loader<List<EarthQuake>>, data: List<EarthQuake>?) {
+        Log.i(LOG_TAG, "Loader info: onLoadFinished has been called")
+        adapter.clear()
+        // If there is no result, do nothing.
+        if (data != null && !data.isEmpty()) {
+            adapter.addAll(data)
+        }
+    }
+
+    override fun onLoaderReset(loader: Loader<List<EarthQuake>>) {
+        Log.i(LOG_TAG, "Loader info: onLoaderReset has been called")
+        //adapter.addAll(ArrayList<EarthQuake>())
+        adapter.clear()
+    }
 
     lateinit var adapter: QuakeAdapter
 
@@ -51,26 +76,8 @@ class EarthquakeActivity : AppCompatActivity() {
                             show() }
             }
         }
-        ExtractEarthQuakes().execute("https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10")
-    }
-
-    private inner class ExtractEarthQuakes: AsyncTask<String, Void, List<EarthQuake>>() {
-        override fun doInBackground(vararg urls: String): List<EarthQuake>? {
-            // Don't perform the request if there are no URLs, or the first URL is null.
-            if (urls.size < 1 || urls[0] == null) {
-                return null
-            }
-            return QueryUtils.fetchEarthquakeData(urls[0])
-        }
-
-        override fun onPostExecute(results: List<EarthQuake>?) {
-            adapter.clear()
-            // If there is no result, do nothing.
-            if (results != null && !results.isEmpty()) {
-                adapter.addAll(results)
-            }
-        }
-
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this) //.forceLoad()
+        Log.i(LOG_TAG, "Loader info: Loader has been initialized")
     }
 
     companion object {

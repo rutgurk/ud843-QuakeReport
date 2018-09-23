@@ -24,21 +24,60 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import android.preference.PreferenceManager
+import android.content.SharedPreferences
+
+
 
 class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<EarthQuake>>, AppCompatActivity() {
 
-    private val USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10"
+    private val USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query"
     private val EARTHQUAKE_LOADER_ID = 1
     private lateinit var textViewForEmptyEarthQuakeListViewState: TextView
     lateinit var adapter: QuakeAdapter
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.getItemId()
+        if (id == R.id.action_settings) {
+            val settingsIntent = Intent(this, SettingsActivity::class.java)
+            startActivity(settingsIntent)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<EarthQuake>> {
         Log.i(LOG_TAG, "Loader info: onCreateLoader has been called")
-        return EarthQuakeLoader(this, USGS_URL)
+        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val minMagnitude = sharedPrefs.getString(
+                getString(R.string.settings_min_magnitude_key),
+                getString(R.string.settings_min_magnitude_default))
+
+        val orderBy = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        )
+
+        val baseUri = Uri.parse(USGS_URL)
+        val uriBuilder = baseUri.buildUpon()
+
+        uriBuilder.appendQueryParameter("format", "geojson")
+        uriBuilder.appendQueryParameter("limit", "10")
+        uriBuilder.appendQueryParameter("minmag", minMagnitude)
+        uriBuilder.appendQueryParameter("orderby", orderBy)
+
+        return EarthQuakeLoader(this, uriBuilder.toString())
     }
 
     override fun onLoadFinished(loader: Loader<List<EarthQuake>>, data: List<EarthQuake>?) {

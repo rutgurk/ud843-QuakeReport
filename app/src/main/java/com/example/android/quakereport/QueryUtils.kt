@@ -14,6 +14,9 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 import java.nio.charset.Charset
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okreplay.OkReplayInterceptor
 
 
 /**
@@ -21,6 +24,7 @@ import java.nio.charset.Charset
  */
 object QueryUtils {
 
+    val okReplayInterceptor = OkReplayInterceptor()
     /**
      * Query the USGS dataset and return a list of earthQuakes.
      */
@@ -65,41 +69,48 @@ object QueryUtils {
      */
     @Throws(IOException::class)
     private fun makeHttpRequest(url: URL?): String {
-        var jsonResponse = ""
+        val client = OkHttpClient.Builder().addInterceptor(okReplayInterceptor).build()
+//        var jsonResponse = ""
+//
+//        // If the URL is null, then return early.
+//        if (url == null) {
+//            return jsonResponse
+//        }
+//
+//        var urlConnection: HttpURLConnection? = null
+//        var inputStream: InputStream? = null
+//        try {
+//            urlConnection = url!!.openConnection() as HttpURLConnection
+//            urlConnection!!.setReadTimeout(10000 /* milliseconds */)
+//            urlConnection!!.setConnectTimeout(15000 /* milliseconds */)
+//            urlConnection!!.setRequestMethod("GET")
+//            urlConnection!!.connect()
+//
+//            // If the request was successful (response code 200),
+//            // then read the input stream and parse the response.
+//            if (urlConnection!!.getResponseCode() === 200) {
+//                inputStream = urlConnection!!.getInputStream()
+//                jsonResponse = readFromStream(inputStream)
+//            } else {
+//                Log.e(LOG_TAG, "Error response code: " + urlConnection!!.getResponseCode())
+//            }
+//        } catch (e: IOException) {
+//            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e)
+//        } finally {
+//            if (urlConnection != null) {
+//                urlConnection!!.disconnect()
+//            }
+//            if (inputStream != null) {
+//                inputStream!!.close()
+//            }
+//        }
 
-        // If the URL is null, then return early.
-        if (url == null) {
-            return jsonResponse
-        }
+        val request = Request.Builder()
+                .url(url)
+                .build()
 
-        var urlConnection: HttpURLConnection? = null
-        var inputStream: InputStream? = null
-        try {
-            urlConnection = url!!.openConnection() as HttpURLConnection
-            urlConnection!!.setReadTimeout(10000 /* milliseconds */)
-            urlConnection!!.setConnectTimeout(15000 /* milliseconds */)
-            urlConnection!!.setRequestMethod("GET")
-            urlConnection!!.connect()
-
-            // If the request was successful (response code 200),
-            // then read the input stream and parse the response.
-            if (urlConnection!!.getResponseCode() === 200) {
-                inputStream = urlConnection!!.getInputStream()
-                jsonResponse = readFromStream(inputStream)
-            } else {
-                Log.e(LOG_TAG, "Error response code: " + urlConnection!!.getResponseCode())
-            }
-        } catch (e: IOException) {
-            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e)
-        } finally {
-            if (urlConnection != null) {
-                urlConnection!!.disconnect()
-            }
-            if (inputStream != null) {
-                inputStream!!.close()
-            }
-        }
-        return jsonResponse
+        val response = client.newCall(request).execute()
+        return response.body()!!.string()
     }
 
     /**

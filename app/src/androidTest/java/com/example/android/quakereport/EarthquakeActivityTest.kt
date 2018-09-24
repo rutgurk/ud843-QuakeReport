@@ -20,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import android.support.test.espresso.Espresso
+import okreplay.OkReplay
 import org.junit.Before
 import org.junit.After
 
@@ -33,9 +34,10 @@ class EarthquakeActivityTest: BaseTest() {
     @Before
     fun registerIdlingResource() {
         Espresso.registerIdlingResources(
-                activityTestRule.getActivity().getCountingIdlingResource())
+                intentsRule.getActivity().getCountingIdlingResource())
     }
 
+    @OkReplay
     @Test
     fun earthquakeActivityTest() {
         val textView = onView(
@@ -47,6 +49,8 @@ class EarthquakeActivityTest: BaseTest() {
                                 0),
                         isDisplayed()))
         textView.check(matches(withText("7.9")))
+
+        Thread.sleep(5000)
 
         val linearLayout = onData(anything())
                 .inAdapterView(allOf(withId(R.id.list),
@@ -97,7 +101,7 @@ class EarthquakeActivityTest: BaseTest() {
     @After
     fun unregisterIdlingResource() {
         Espresso.unregisterIdlingResources(
-                activityTestRule.getActivity().getCountingIdlingResource())
+                intentsRule.getActivity().getCountingIdlingResource())
     }
 
 }

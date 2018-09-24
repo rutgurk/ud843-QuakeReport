@@ -8,10 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import android.preference.PreferenceManager
 import android.preference.ListPreference
 
-
-
-
-
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

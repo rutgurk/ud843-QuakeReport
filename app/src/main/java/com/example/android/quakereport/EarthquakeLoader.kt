@@ -5,8 +5,8 @@ import android.content.Context
 import android.util.Log
 import com.example.android.quakereport.EarthquakeActivity.Companion.LOG_TAG
 
-class EarthQuakeLoader(context: Context, val url: String): AsyncTaskLoader<List<EarthQuake>>(context) {
-    override fun loadInBackground(): List<EarthQuake>? {
+class EarthquakeLoader(context: Context, val url: String): AsyncTaskLoader<List<Earthquake>>(context) {
+    override fun loadInBackground(): List<Earthquake>? {
         Log.i(LOG_TAG, "Loader info: loadInBackground has been called")
         // Don't perform the request if there are no URLs, or the first URL is null.
         if (url == null || url.isEmpty()) {

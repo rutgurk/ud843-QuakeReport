@@ -15,7 +15,7 @@ import com.example.android.quakereport.FormatUtils.formatMagnitude
 import com.example.android.quakereport.FormatUtils.formatTime
 
 
-class QuakeAdapter(context: Context, listOfEarthQuakes: List<EarthQuake>) : ArrayAdapter<EarthQuake>(context, 0, listOfEarthQuakes) {
+class QuakeAdapter(context: Context, listOfEarthquakes: List<Earthquake>) : ArrayAdapter<Earthquake>(context, 0, listOfEarthquakes) {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             // Check if the existing view is being reused, otherwise inflate the view
             var listItemView = convertView

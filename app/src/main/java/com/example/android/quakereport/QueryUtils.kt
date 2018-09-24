@@ -24,7 +24,7 @@ object QueryUtils {
     /**
      * Query the USGS dataset and return a list of earthQuakes.
      */
-    fun fetchEarthquakeData(requestUrl: String): List<EarthQuake>? {
+    fun fetchEarthquakeData(requestUrl: String): List<Earthquake>? {
         // Create URL object
         val url = createUrl(requestUrl)
 
@@ -126,10 +126,10 @@ object QueryUtils {
      * Return a list of [Earthquake] objects that has been built up from
      * parsing a JSON response.
      */
-    private fun extractEarthquakes(jsonResponse: String): ArrayList<EarthQuake> {
+    private fun extractEarthquakes(jsonResponse: String): ArrayList<Earthquake> {
 
         // Create an empty ArrayList that we can start adding earthquakes to
-        val earthquakes = ArrayList<EarthQuake>()
+        val earthquakes = ArrayList<Earthquake>()
 
         // Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
@@ -140,7 +140,7 @@ object QueryUtils {
             var counter = 0
             while (counter <  earthQuakeFeatures.length()) {
                 val earthQuakeProperties = earthQuakeFeatures.getJSONObject(counter).getJSONObject("properties")
-                        earthquakes.add(EarthQuake(earthQuakeProperties.getDouble("mag"), earthQuakeProperties.getString("place"), earthQuakeProperties.getLong("time"), earthQuakeProperties.getString("url")))
+                        earthquakes.add(Earthquake(earthQuakeProperties.getDouble("mag"), earthQuakeProperties.getString("place"), earthQuakeProperties.getLong("time"), earthQuakeProperties.getString("url")))
                 counter ++
             }
 

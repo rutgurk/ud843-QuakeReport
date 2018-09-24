@@ -15,6 +15,7 @@
 -->
 <resources>
     <string name="app_name">Quake Report</string>
+    <string name="earthquake_detail_name">Earthquake info</string>
     <string name="proximity_copy">Near the</string>
     <string name="no_earthquakes">No earthquakes found</string>
     <string name="no_internet_connection">No internet connection.</string>
@@ -39,4 +40,8 @@
     <!-- Label for order-by most recent option [CHAR LIMIT=20] -->
     <string name="settings_order_by_most_recent_label">Most Recent</string>
     <string name="settings_order_by_most_recent_value" translatable="false">time</string>
+
+    <!-- Label for perceived strength value [CHAR LIMIT=40] -->
+    <string name="perceived_strength">Earthquake Strength</string>
+    <string name="visit_earthquake_website">Visit website</string>
 </resources>

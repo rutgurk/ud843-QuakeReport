@@ -29,13 +29,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import android.preference.PreferenceManager
-import android.content.SharedPreferences
 
 
-
-class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<EarthQuake>>, AppCompatActivity() {
+class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<Earthquake>>, AppCompatActivity() {
 
     private val USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query"
     private val EARTHQUAKE_LOADER_ID = 1
@@ -57,7 +54,7 @@ class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<EarthQuake>>, AppC
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<EarthQuake>> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<Earthquake>> {
         Log.i(LOG_TAG, "Loader info: onCreateLoader has been called")
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
         val minMagnitude = sharedPrefs.getString(
@@ -77,10 +74,10 @@ class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<EarthQuake>>, AppC
         uriBuilder.appendQueryParameter("minmag", minMagnitude)
         uriBuilder.appendQueryParameter("orderby", orderBy)
 
-        return EarthQuakeLoader(this, uriBuilder.toString())
+        return EarthquakeLoader(this, uriBuilder.toString())
     }
 
-    override fun onLoadFinished(loader: Loader<List<EarthQuake>>, data: List<EarthQuake>?) {
+    override fun onLoadFinished(loader: Loader<List<Earthquake>>, data: List<Earthquake>?) {
         Log.i(LOG_TAG, "Loader info: onLoadFinished has been called")
         val loadingIndicator = findViewById<View>(R.id.loading_indicator)
         loadingIndicator.visibility = View.GONE
@@ -92,9 +89,9 @@ class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<EarthQuake>>, AppC
         }
     }
 
-    override fun onLoaderReset(loader: Loader<List<EarthQuake>>) {
+    override fun onLoaderReset(loader: Loader<List<Earthquake>>) {
         Log.i(LOG_TAG, "Loader info: onLoaderReset has been called")
-        //adapter.addAll(ArrayList<EarthQuake>())
+        //adapter.addAll(ArrayList<Earthquake>())
         adapter.clear()
     }
 
@@ -110,21 +107,26 @@ class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<EarthQuake>>, AppC
 
         // Create a new {@link ArrayAdapter} of earthquakes
         adapter = QuakeAdapter(
-                this, ArrayList<EarthQuake>())
+                this, ArrayList<Earthquake>())
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.adapter = adapter
         // Set a click listener on that View
-        earthquakeListView.setOnItemClickListener{ _, _, position, _ ->
-            try {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(adapter.getItem(position).url))
-                this.startActivity(intent)
-            } catch (e: Throwable) {
-                Toast.makeText(this, "Het openen van de link is niet gelukt", Toast.LENGTH_LONG)
-                        .apply {
-                            show() }
-            }
+        earthquakeListView.setOnItemClickListener { _, _, position, _ ->
+            //            try {
+            val intent = Intent(this, EarthquakeDetailActivity::class.java)
+            intent.putExtra("earthquake", adapter.getItem(position))
+            startActivity(intent)
         }
+//
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(adapter.getItem(position).url))
+//                this.startActivity(intent)
+//            } catch (e: Throwable) {
+//                Toast.makeText(this, "Het openen van de link is niet gelukt", Toast.LENGTH_LONG)
+//                        .apply {
+//                            show() }
+//            }
+
 
         var connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         var networkInfo = connectivityManager.activeNetworkInfo

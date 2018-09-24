@@ -30,6 +30,9 @@ import android.view.View
 import android.widget.ListView
 import android.widget.TextView
 import android.preference.PreferenceManager
+import android.support.annotation.VisibleForTesting
+import android.support.test.espresso.IdlingResource
+import com.example.android.quakereport.utils.EspressoIdlingResource
 
 
 class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<Earthquake>>, AppCompatActivity() {
@@ -73,8 +76,10 @@ class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<Earthquake>>, AppC
         uriBuilder.appendQueryParameter("limit", "10")
         uriBuilder.appendQueryParameter("minmag", minMagnitude)
         uriBuilder.appendQueryParameter("orderby", orderBy)
-
-        return EarthquakeLoader(this, uriBuilder.toString())
+        EspressoIdlingResource.increment()
+        var listOfEarthquakes = EarthquakeLoader(this, uriBuilder.toString())
+        EspressoIdlingResource.decrement()
+        return listOfEarthquakes
     }
 
     override fun onLoadFinished(loader: Loader<List<Earthquake>>, data: List<Earthquake>?) {
@@ -118,15 +123,6 @@ class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<Earthquake>>, AppC
             intent.putExtra("earthquake", adapter.getItem(position))
             startActivity(intent)
         }
-//
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(adapter.getItem(position).url))
-//                this.startActivity(intent)
-//            } catch (e: Throwable) {
-//                Toast.makeText(this, "Het openen van de link is niet gelukt", Toast.LENGTH_LONG)
-//                        .apply {
-//                            show() }
-//            }
-
 
         var connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         var networkInfo = connectivityManager.activeNetworkInfo
@@ -141,7 +137,14 @@ class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<Earthquake>>, AppC
         }
     }
 
+    @VisibleForTesting
+    fun getCountingIdlingResource(): IdlingResource {
+        return EspressoIdlingResource.idlingResource
+    }
+
     companion object {
         val LOG_TAG = EarthquakeActivity::class.simpleName
     }
+
+
 }

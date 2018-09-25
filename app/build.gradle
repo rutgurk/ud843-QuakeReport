@@ -43,6 +43,8 @@ dependencies {
     releaseImplementation 'com.airbnb.okreplay:noop:1.4.0'
     androidTestImplementation 'com.airbnb.okreplay:espresso:1.4.0'
     androidTestImplementation 'com.squareup.spoon:spoon-client:2.0.0-SNAPSHOT'
+    androidTestImplementation 'com.jraska:falcon:2.0.1'
+    androidTestImplementation 'com.jraska:falcon-spoon-compat:2.0.1'
     // For Spoon snapshot, until 2.0.0 is released
 
 }

@@ -5,6 +5,7 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.intent.rule.IntentsTestRule
 import com.example.android.quakereport.EarthquakeActivity
 import com.example.android.quakereport.QueryUtils.okReplayInterceptor
+import com.jraska.falcon.FalconSpoonRule
 import okreplay.*
 import org.junit.Rule
 import org.junit.rules.RuleChain
@@ -14,8 +15,6 @@ import org.junit.runner.Description
 
 abstract class BaseTest {
 
-    private var currentActivity: Activity? = null
-
     /* Instantiate an IntentsTestRule object for MainActivity. */
     var intentsRule: IntentsTestRule<EarthquakeActivity> = object : IntentsTestRule<EarthquakeActivity>(EarthquakeActivity::class.java) {
         override fun beforeActivityLaunched() {
@@ -24,19 +23,19 @@ abstract class BaseTest {
         }
     }
 
-//    @get:Rule
-//    val falconSpoonRule = FalconSpoonRule()
-//
-//    @get:Rule
-//    var watcher: TestRule = object : TestWatcher() {
-//        override fun failed(e: Throwable?, description: Description?) {
-//            // Take a screenshot on test failure for use in Spoon test report
-//            takeFalconSpoonScreenshot(Regex("[^a-zA-Z0-9_-]").replace(("Error_" + description!!.className + "-" + description!!.methodName), "_"))
-//        }
-//    }
+    @get:Rule
+    val falconSpoonRule = FalconSpoonRule()
+
+    @get:Rule
+    var watcher: TestRule = object : TestWatcher() {
+        override fun failed(e: Throwable?, description: Description?) {
+            // Take a screenshot on test failure for use in Spoon test report
+            takeFalconSpoonScreenshot(Regex("[^a-zA-Z0-9_-]").replace(("Error_" + description!!.className + "-" + description!!.methodName), "_"))
+        }
+    }
 
     /**
-     * configures okreplay http test recorder. see confluence for details on why, how and what
+     * configures okreplay http test recorder
      */
     val okReplayConfig: OkReplayConfig = OkReplayConfig.Builder()
             .tapeRoot(AndroidTapeRootSD(AssetManager(InstrumentationRegistry.getInstrumentation().context), this@BaseTest.javaClass.simpleName.toLowerCase(), InstrumentationRegistry.getInstrumentation().targetContext))
@@ -46,7 +45,6 @@ abstract class BaseTest {
             .defaultMatchRules( MatchRules.path, MatchRules.method, MatchRules.queryParams, MatchRules.body)
             .build()
 
-    //zie https://github.com/airbnb/okreplay/issues/64
     @Rule
     @JvmField
     val testRule: TestRule = RuleChain.outerRule(RecorderRule(okReplayConfig)).around(intentsRule)
@@ -59,7 +57,7 @@ abstract class BaseTest {
         // sometimes screenshots are taken while UI elements are still loading, so hopefully this small wait will suffice
        Thread.sleep(200)
         try {
-//            falconSpoonRule.screenshot(mIntentsRule.activity, tag)
+            falconSpoonRule.screenshot(intentsRule.activity, tag)
         } catch(ex: RuntimeException) {
             // Failed to take screenshot.. not a reason to fail a test.
         }

@@ -1,9 +1,9 @@
 package com.example.android.quakereport.base
 
 abstract class Page {
-    abstract fun waitForLoadingOf()
+    abstract fun waitForLoading()
 
     init {
-        waitForLoadingOf()
+        waitForLoading()
     }
 }

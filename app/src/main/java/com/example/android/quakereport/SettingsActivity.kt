@@ -25,6 +25,9 @@ class SettingsActivity : AppCompatActivity() {
 
             val orderBy = findPreference(getString(R.string.settings_order_by_key))
             bindPreferenceSummaryToValue(orderBy)
+
+            val amountOfResults = findPreference(getString(R.string.settings_amount_of_results_key))
+            bindPreferenceSummaryToValue(amountOfResults)
         }
 
         override fun onPreferenceChange(preference: Preference, value: Any): Boolean {

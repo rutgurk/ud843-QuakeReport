@@ -12,6 +12,9 @@ import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.intent.Intents
 import android.support.test.espresso.intent.matcher.IntentMatchers
 import android.support.test.espresso.intent.matcher.UriMatchers
+import com.example.android.quakereport.base.EARTHQUAKEDETAIL_MAGNITUDE_TITLE
+import com.example.android.quakereport.base.EARTHQUAKE_PLACENAME
+import com.example.android.quakereport.base.USGS_BASE_URL
 import com.example.android.quakereport.pageObjects.EarthquakeListPage
 import okreplay.OkReplay
 import org.hamcrest.CoreMatchers
@@ -31,19 +34,22 @@ class EarthquakeDetailShould: BaseTest() {
     @Test
     fun haveTitleForMagnitude() {
         EarthquakeListPage()
-                .goToEarthquakeReportForPlace("209km W of Ile Hunter, New Caledonia")
-                .magnitudeTitle.check(matches(withText("EARTHQUAKE STRENGTH")))
+                .goToEarthquakeReportForPlace(EARTHQUAKE_PLACENAME)
+                .magnitudeTitle.check(matches(withText(EARTHQUAKEDETAIL_MAGNITUDE_TITLE)))
 
        takeFalconSpoonScreenshot("haveTitleForMagnitude")
     }
 
+    @OkReplay
     @Test
     fun linkToUSGSWebsite() {
-        EarthquakeListPage().goToEarthquakeReportForPlace("Suva, Fiji").visitWebsiteButton.perform(click())
+        EarthquakeListPage()
+                .goToEarthquakeReportForPlace(EARTHQUAKE_PLACENAME)
+                .visitWebsiteButton.perform(click())
 
         Intents.intended(CoreMatchers.allOf(
                 IntentMatchers.hasAction(CoreMatchers.equalTo(Intent.ACTION_VIEW)),
-                IntentMatchers.hasData(UriMatchers.hasHost(CoreMatchers.equalTo("earthquake.usgs.gov")))))
+                IntentMatchers.hasData(UriMatchers.hasHost(CoreMatchers.equalTo(USGS_BASE_URL)))))
     }
 
     @After

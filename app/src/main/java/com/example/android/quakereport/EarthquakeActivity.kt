@@ -69,11 +69,16 @@ class EarthquakeActivity : LoaderManager.LoaderCallbacks<List<Earthquake>>, AppC
                 getString(R.string.settings_order_by_default)
         )
 
+        val amountOfResults = sharedPrefs.getString(
+                getString(R.string.settings_amount_of_results_key),
+                getString(R.string.settings_amount_of_results_default)
+        )
+
         val baseUri = Uri.parse(USGS_URL)
         val uriBuilder = baseUri.buildUpon()
 
         uriBuilder.appendQueryParameter("format", "geojson")
-        uriBuilder.appendQueryParameter("limit", "10")
+        uriBuilder.appendQueryParameter("limit", amountOfResults)
         uriBuilder.appendQueryParameter("minmag", minMagnitude)
         uriBuilder.appendQueryParameter("orderby", orderBy)
         EspressoIdlingResource.increment()

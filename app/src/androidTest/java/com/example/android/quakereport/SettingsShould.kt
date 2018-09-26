@@ -1,25 +1,20 @@
 package com.example.android.quakereport
 
-
-import android.support.test.espresso.Espresso.onData
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.*
+import android.support.test.espresso.Espresso
+import android.support.test.espresso.Espresso.pressBack
+import android.support.test.espresso.ViewAssertion
 import android.support.test.espresso.assertion.ViewAssertions
+import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.filters.LargeTest
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import android.view.View
-import android.view.ViewGroup
 import com.example.android.quakereport.base.BaseTest
 import com.example.android.quakereport.pageObjects.EarthquakeListPage
 import com.example.android.quakereport.pageObjects.OrderTypes
 import com.example.android.quakereport.pageObjects.QuakeReportSettingsPage
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.*
-import org.hamcrest.TypeSafeMatcher
-import org.junit.Rule
+import okreplay.OkReplay
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -27,17 +22,60 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SettingsShould: BaseTest() {
 
+    @Before
+    fun registerIdlingResource() {
+        Espresso.registerIdlingResources(
+                intentsRule.getActivity().getCountingIdlingResource())
+    }
+
+    @OkReplay
     @Test
-    fun displayChangedMagnitudeValue() {
+    fun displayChangedMagnitudePreferenceValue() {
         EarthquakeListPage()
                 .goToQuakeReportSettings()
-                .magnitudePreferenceValue.check(ViewAssertions.matches(withText("2")))
-        takeFalconSpoonScreenshot("displayChangedMagnitudeValue_beforeCange")
+                .magnitudePreferenceValue.check(matches(withText("2")))
+        takeFalconSpoonScreenshot("displayChangedMagnitudeValue_beforeChange")
+
+        QuakeReportSettingsPage()
+                .setMagnitudeTo(7)
+                .magnitudePreferenceValue.check(matches(withText("7")))
+        takeFalconSpoonScreenshot("displayChangedMagnitudeValue_afterChange")
+    }
+
+    @OkReplay
+    @Test
+    fun displayChangedOrderByPreferenceValue() {
+        EarthquakeListPage()
+                .goToQuakeReportSettings()
+                .orderByPreferenceValue.check(matches(withText(OrderTypes.MAGNITUDE.typeText)))
+        takeFalconSpoonScreenshot("displayChangedOrderByPreferenceValue_beforeChange")
 
         QuakeReportSettingsPage()
                 .setOrderByTo(OrderTypes.RECENT)
-                .setMagnitudeTo(7)
-                .magnitudePreferenceValue.check(ViewAssertions.matches(withText("7")))
-        takeFalconSpoonScreenshot("displayChangedMagnitudeValue_afterChange")
+                .orderByPreferenceValue.check(matches(withText(OrderTypes.RECENT.typeText)))
+        takeFalconSpoonScreenshot("displayChangedOrderByPreferenceValue_afterChange")
     }
+
+    @OkReplay
+    @Test
+    fun displayChangedAmountOfSearchResultsPreferenceValue() {
+        EarthquakeListPage()
+                .goToQuakeReportSettings()
+                .amountOfSearchResultsValue.check(matches(withText("10")))
+        takeFalconSpoonScreenshot("displayChangedAmountOfSearchResultsPreferenceValue_beforeChange")
+
+        QuakeReportSettingsPage()
+                .setMaxAmountOfResultsTo(2)
+                .amountOfSearchResultsValue.check(matches(withText("2")))
+        takeFalconSpoonScreenshot("displayChangedAmountOfSearchResultsPreferenceValue_afterChange")
+
+        pressBack()
+    }
+
+    @After
+    fun unregisterIdlingResource() {
+        Espresso.unregisterIdlingResources(
+                intentsRule.getActivity().getCountingIdlingResource())
+    }
+
 }

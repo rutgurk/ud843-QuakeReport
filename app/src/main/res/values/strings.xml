@@ -29,7 +29,7 @@
     <string name="settings_min_magnitude_default" translatable="false">2</string>
 
     <!-- Strings For Amount Of Results Preference [CHAR LIMIT=30] -->
-    <string name="settings_amount_of_results_label">Amount of Search Results</string>
+    <string name="settings_amount_of_results_label">Max amount of Search Results</string>
     <string name="settings_amount_of_results_key" translatable="false">amount_results_key</string>
     <string name="settings_amount_of_results_default" translatable="false">10</string>
 

@@ -10,7 +10,7 @@ internal class EarthQuakePlaceNameMatcher private constructor(private val placeN
     }
 
     override fun describeTo(description: Description) {
-        description.appendText("with hint text placeName:")
+        description.appendText("Couldn't find match for place: ")
                 .appendValue(placeName)
     }
 

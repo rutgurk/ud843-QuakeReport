@@ -2,6 +2,7 @@ package com.example.android.quakereport.base
 
 import android.content.Context
 import android.os.Environment
+import android.util.Log
 import okreplay.AssetManager
 import okreplay.DefaultTapeRoot
 import java.io.File
@@ -19,7 +20,7 @@ open class AndroidTapeRootSD(private val assetManager: AssetManager, testName: S
         // directory instead.
 
         val file = "$assetsDirPrefix/$tapeFileName"
-        //context.assets.list(assetsDirPrefix).forEach { { "asset in $assetsDirPrefix: ${it}" } }
+        context.assets.list(assetsDirPrefix).forEach { { "asset in $assetsDirPrefix: ${it}" } }
 
 
 
@@ -48,10 +49,10 @@ open class AndroidTapeRootSD(private val assetManager: AssetManager, testName: S
             val parent = File(context.getExternalFilesDir(null), "okreplay/tapes/")
 
             if (parent.exists()) {
-                //PostNLLogger.info(TAG) { "writing to existing dir : ${parent.absoluteFile} " }
+                Log.i(TAG, "writing to existing dir : ${parent.absoluteFile}")
             } else {
                 val b = parent.mkdirs()
-               // PostNLLogger.info(TAG) { "making dir : ${parent.absoluteFile}   succes: $b" }
+               Log.i(TAG, "making dir : ${parent.absoluteFile}   succes: $b")
             }
             return File(parent, type)
         }

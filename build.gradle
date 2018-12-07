@@ -9,7 +9,7 @@ buildscript {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha03'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.airbnb.okreplay:gradle-plugin:1.4.0'
         classpath "com.jaredsburrows:gradle-spoon-plugin:1.4.0"

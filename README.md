@@ -22,6 +22,10 @@ Getting Started
 This sample uses the Gradle build system. To build this project, use the
 "gradlew build" command or use "Import Project" in Android Studio.
 
+Tests
+---------------
+Run runSpoonTests.sh to launch the Espresso UI tests using Spoon
+
 Support
 -------
 
